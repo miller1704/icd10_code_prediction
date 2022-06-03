@@ -1,0 +1,9 @@
+Flask==2.1.2
+pandas==1.0.0
+numpy==1.16.0 #https://numpy.org/doc/stable/release/1.16.0-notes.html
+llvmlite==0.31.0 #https://pypi.org/project/llvmlite/#history
+numba==0.49.0
+scikit-learn==1.0.2
+flask-limiter==2.4.5.1 
+gunicorn==20.1.0
+#scipy==1.4.1

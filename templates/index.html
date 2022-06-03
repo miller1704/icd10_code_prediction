@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<title>Automating Diagnostic Coding in Patient Charts</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!--css files-->
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<!--initiate jquery (javascript library) -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script>window.jQuery || document.write('<script src="./static/jquery.js"><\/script>')</script>
+		<!-- Include the Quill library -->
+		<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+		<!--favicon-->
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+		<style>
+		body {font-family: "Lato", sans-serif}
+		.mySlides {display: none}
+		</style>
+	</head>
+
+
+
+	<body>
+		<!-- Navbar -->
+		<div class="w3-top">
+		  <div class="w3-bar w3-black w3-card">
+		    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+		    <a href="#" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+		    <a href="#predictor" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CODE PREDICTOR</a>
+		    <a href="#purpose" class="w3-bar-item w3-button w3-padding-large w3-hide-small">PURPOSE</a>
+		    <a href="#stories" class="w3-bar-item w3-button w3-padding-large w3-hide-small">STORIES</a>
+		    <a href="#specs" class="w3-bar-item w3-button w3-padding-large w3-hide-small">SPECS</a>
+
+		    <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
+		  </div>
+		</div>
+
+		<!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+		<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+		  <a href="#predictor" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">CODE PREDICTOR</a>
+		  <a href="#purpose" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">PURPOSE</a>
+		  <a href="#stories" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">STORIES</a>
+		  <a href="#specs" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">SPECS</a>
+		</div>
+
+		<!-- Page content -->
+		<div class="w3-content" style="max-width:2000px;margin-top:46px">
+
+		  <!-- Automatic Slideshow Images -->
+		  <div class="mySlides w3-display-container w3-center">
+		    <img src="{{url_for('static', filename='/images/custom_representation.jpeg')}}" style="width:100%">
+		    <div class="w3-display-bottommiddle w3-container w3-text-white">
+		      <h3>Learning</h3>
+		      <p style="font-size: 2vh"><b>Computers can understand relationships between diagnosis and insurance codes better than humans</b></p>   
+		    </div>
+		  </div>
+
+		  <div class="mySlides w3-display-container w3-center">
+		    <img src="{{url_for('static', filename='/images/custom_prediction.jpeg')}}" style="width:100%">
+		    <div class="w3-display-bottommiddle w3-container w3-text-white">
+		      <h3>Prediction</h3>
+		      <p style="font-size: 2vh"><b>EHR software can free time for doctors by providing accurate suggestions as part of existing workflows</b></p>    
+		    </div>
+		  </div>
+
+		  <div class="mySlides w3-display-container w3-center">
+		    <img src="{{url_for('static', filename='/images/custom_outcomes.jpeg')}}" style="width:100%">
+		    <div class="w3-display-bottommiddle w3-container w3-text-white">
+		      <h3>Outcomes</h3>
+		      <p style="font-size: 2vh";><b>Doctors can spend less time searching in drop-down fields, and more time focusing on patients</b></p>    
+		    </div>
+		  </div>
+
+		  <!-- The Predictor Section -->
+		  <div class="w3-container w3-center w3-padding-64" style="width: 100vw;height:110vh" id="predictor">
+		    <h2 class="w3-wide" style="height:10vh;">CODE PREDICTOR</h2>
+		    <!-- row 2: titles for left and right -->
+		    <div class="w3-row" style="height:10vh;">
+		    	<div style="float:left;width:60vw;font-size: 3vh;">Given the patient chart... </div>
+		    	<div style="float:right;width:30vw;font-size: 3vh;">...the official ICD-10 code is:</div>
+		    </div>
+		    <!-- row 3: the actual editor and prediction -->
+		    <div class="w3-row w3-center" style="height:40vh;">
+		    	<div class="w3-left">
+		    		<!-- Include stylesheet -->
+					<link href="./static/css/main.css" rel="stylesheet">
+	                <!-- Quill container -->
+	                <div id="editor" class="w3-left" style="width:60vw;height:40vh;font-size: 2vh;" ><p></p></div>
+		    	</div>
+		    	<div class="w3-right">
+		    		<!-- PREDICTION updated using id = 'result' from jQuery -->
+	            	<div id=icd10_code class="w3-center" style="width:30vw;color: blue; font-size: 6vh;">
+		    			<p style="color:grey;font-size: 1.5vh;">(Psst..enter at least 30 characters to the left!)</p>
+		    		</div>
+		    		<div id=icd10_description class="w3-center" style="width:30vw;color:grey;font-size: 2vh;"></div>
+		    	</div>
+		    </div>
+		    <!-- row 4: subtitles -->
+		    <div class="w3-row w3-center w3-left" style="height:15vh;">
+		    	<div  class="w3-row w3-center w3-left" style="width:60vw;height:15vh;font-size: 2vh;color: grey;">
+		    		<p>Examples:</p>
+	                <p>"Patient has a Malignant neoplasm in stomach..."</p>
+	                <p>"Patient in car accident with dislocation at left side of jaw..."</p>   
+		    	</div>
+		    </div>
+		</div>
+
+
+		  <!-- The Purpose Section -->
+		  <div class="w3-black" id="purpose">
+		    <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
+		      <h2 class="w3-wide w3-center">PURPOSE OF PREDICTION</h2>
+		      <p class="w3-opacity w3-center"><i>Helping doctors focus on patients</i></p><br>
+
+		      <div class="w3-row-padding w3-padding-32" style="margin:0 -16px">
+		        <div class="w3-third w3-margin-bottom">
+		          <img src="{{url_for('static', filename='/images/custom_purpose_efficiency.jpeg')}}" alt="New York" style="width:100%" class="w3-hover-opacity">
+		          <div class="w3-container w3-white">
+		            <p><b>Efficiency</b></p>
+		            <p>Save time spent repeating diagnosis in code search boxes, and reduce risk of <a href="https://www.verywellhealth.com/learn-about-insurance-codes-to-avoid-billing-errors-1738628">error</a>.</p>
+		          </div>
+		        </div>
+		        <div class="w3-third w3-margin-bottom">
+		          <img src="{{url_for('static', filename='/images/custom_purpose_focus.jpeg')}}" alt="Paris" style="width:100%" class="w3-hover-opacity">
+		          <div class="w3-container w3-white">
+		            <p><b>Patient focus</b></p>
+		            <p>Allow doctors to spend more time focused on patients, and less on software</p>
+		          </div>
+		        </div>
+		        <div class="w3-third w3-margin-bottom">
+		          <img src="{{url_for('static', filename='/images/custom_purpose_outcomes.jpeg')}}" alt="San Francisco" style="width:100%" class="w3-hover-opacity">
+		          <div class="w3-container w3-white">
+		            <p><b>Outcomes</b></p>
+		            <p>Patients benefit when doctors have more time for diagnosis and treatment</p>
+		          </div>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+
+		  <!-- The Stories Section -->
+		  <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="stories">
+		    <h2 class="w3-wide w3-center">DESIRED USER STORIES</h2>
+		    <p class="w3-opacity w3-center"><i>"I typed the patients likely diagnoses into a chart and it automatically identified the most likely insurance codes for my diagnosis, and labeled which words were most important in making this classification. This saved me time and allowed me to focus more on my patient." </i></p>
+		    
+		  </div>
+		  
+		  <!-- The Specs Section -->
+		  <div class="w3-black" id="specs">
+		    <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
+		      <h2 class="w3-wide w3-center">SPECIFICATIONS</h2>
+		      <p class="w3-opacity w3-center"><i> - Flask web application hosted in Google Cloud</i></p><br>
+		      <p class="w3-opacity w3-center"><i> - Predict ICD-10 medical diagnostic codes based on unstructured text in an editor </i></p><br>
+		      <p class="w3-opacity w3-center"><i> - ML Representation: Naive Bayes, defined Y=arg max P(Y=yi)DotProd(P(Xi|yi)*P(Xi))</i></p><br>
+		      <p class="w3-opacity w3-center"><i> - ML Evaluation: AUC (combination of TPR+FPR)</i></p><br>
+		      <p class="w3-opacity w3-center"><i> - ML Optimization: Maximum a posteriori</i></p><br>
+		      <p class="w3-opacity w3-center"><i> - Underlined words were important (high frequency of appearance) in pruned random forest model </i></p><br>
+		  
+		<!-- End Page Content -->
+		</div>
+
+		<!-- Image of location/map -->
+		<img src="{{url_for('static', filename='/images/w3_map.jpeg')}}" class="w3-image w3-greyscale-min" style="width:100%">
+
+		<!-- Footer -->
+		<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
+		  <i class="fa fa-facebook-official w3-hover-opacity"></i>
+		  <i class="fa fa-instagram w3-hover-opacity"></i>
+		  <i class="fa fa-snapchat w3-hover-opacity"></i>
+		  <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+		  <i class="fa fa-twitter w3-hover-opacity"></i>
+		  <i class="fa fa-linkedin w3-hover-opacity"></i>
+		  <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+		</footer>
+
+		<script>
+		// Automatic Slideshow - change image every 4 seconds
+		var myIndex = 0;
+		carousel();
+
+		function carousel() {
+		  var i;
+		  var x = document.getElementsByClassName("mySlides");
+		  for (i = 0; i < x.length; i++) {
+		    x[i].style.display = "none";  
+		  }
+		  myIndex++;
+		  if (myIndex > x.length) {myIndex = 1}    
+		  x[myIndex-1].style.display = "block";  
+		  setTimeout(carousel, 4000);    
+		}
+
+		// Used to toggle the menu on small screens when clicking on the menu button
+		function myFunction() {
+		  var x = document.getElementById("navDemo");
+		  if (x.className.indexOf("w3-show") == -1) {
+		    x.className += " w3-show";
+		  } else { 
+		    x.className = x.className.replace(" w3-show", "");
+		  }
+		}
+
+		// When the user clicks anywhere outside of the modal, close it
+		var modal = document.getElementById('ticketModal');
+		window.onclick = function(event) {
+		  if (event.target == modal) {
+		    modal.style.display = "none";
+		  }
+		}
+		</script>
+	<!--point to external js file -->
+	<script type="text/javascript" src="/static/script.js"></script>
+	</body>
+</html>

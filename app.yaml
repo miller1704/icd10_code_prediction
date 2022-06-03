@@ -1,0 +1,36 @@
+
+runtime: python
+env: flex
+
+entrypoint: gunicorn -b :$PORT main:app
+
+runtime_config:
+  python_version: 3.7
+
+# This sample incurs costs to run on the App Engine flexible environment. 
+# The settings below are to reduce costs during testing and are not appropriate
+# for production use. For more information, see:
+# https://cloud.google.com/appengine/docs/flexible/python/configuring-your-app-with-app-yaml
+
+resources:
+  cpu: 4
+  memory_gb: 4
+  disk_size_gb: 10
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 2
+
+# liveness_check:
+#     path: "/liveness_check"
+#     check_interval_sec: 30
+#     timeout_sec: 4
+#     failure_threshold: 2
+#     success_threshold: 2
+
+# readiness_check:
+#     path: "/readiness_check"
+#     check_interval_sec: 5
+#     timeout_sec: 4
+#     failure_threshold: 2
+#     success_threshold: 2
+#     app_start_timeout_sec: 600
