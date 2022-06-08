@@ -14,7 +14,7 @@ app = Flask(__name__)
 limiter = Limiter(
     app,
     key_func=get_remote_address,
-    default_limits=["300 per day", "300 per hour"]
+    default_limits=["500 per day", "300 per hour"]
 )
 
 def load_data():
